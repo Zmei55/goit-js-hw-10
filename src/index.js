@@ -14,7 +14,7 @@ fetch('https://restcountries.com/v3.1/name/germany?fields=name,capital,populatio
   .then(r => r.json())
   .then(countrys => {
     console.log('countrys', countrys);
-    countrys.map(c => renderCountryInfo(c));
+    countrys.map(country => renderCountryInfo(country));
   })
   .catch(error => console.log(error));
 
