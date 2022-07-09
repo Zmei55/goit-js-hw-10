@@ -2,20 +2,20 @@
   "name": "js_10",
   "version": "1.0.0",
   "description": "",
-  "homepage": "https://zmei55.github.io/goit-js-hw-09v02",
+  "homepage": "https://zmei55.github.io/goit-js-hw-10",
   "scripts": {
     "start": "parcel src/index.html",
-    "build": "parcel build src/index.html --public-url /goit-js-hw-09v02/"
+    "build": "parcel build src/index.html --public-url /goit-js-hw-10/"
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/Zmei55/goit-js-hw-09v02.git"
+    "url": "git+https://github.com/Zmei55/goit-js-hw-10.git"
   },
   "keywords": [],
   "author": "Andrei",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/Zmei55/goit-js-hw-09v02"
+    "url": "https://github.com/Zmei55/goit-js-hw-10"
   },
   "parcelCleanPaths": [
     "dist",
