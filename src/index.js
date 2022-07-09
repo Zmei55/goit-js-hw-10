@@ -1,8 +1,8 @@
 import './css/styles.css';
 import debounce from 'lodash.debounce';
-// import Notiflix from 'notiflix';
+import Notiflix from 'notiflix';
 
-// const DEBOUNCE_DELAY = 300;
+const DEBOUNCE_DELAY = 300;
 
 const refs = {
   countryInfo: document.querySelector('.country-info'),
@@ -10,7 +10,7 @@ const refs = {
   inputRef: document.querySelector('#search-box'),
 };
 
-refs.inputRef.addEventListener('input', fetchCountries);
+refs.inputRef.addEventListener('input', debounce(fetchCountries, DEBOUNCE_DELAY));
 
 function fetchCountries(name) {
   name.preventDefault();
@@ -20,12 +20,35 @@ function fetchCountries(name) {
   fetch(
     `https://restcountries.com/v3.1/name/${countryToFind}?fields=name,capital,population,languages,flags`
   )
-    .then(r => r.json())
-    .then(countries => {
-      console.log('fetchCountries ~ countries', countries);
-      renderCountryInfo(countries);
+    .then(r => {
+      if (!r.ok) {
+        throw Error();
+      }
+
+      return r.json();
     })
-    .catch(error => console.log(error));
+    .then(countries => {
+      if (refs.inputRef.value === '') {
+        refs.countryList.innerHTML = '';
+        refs.countryInfo.innerHTML = '';
+      }
+      if (countries.length > 10) {
+        Notiflix.Notify.success('Too many matches found. Please enter a more specific name.');
+      }
+      if (countries.length >= 2 && countries.length <= 10) {
+        renderCountryList(countries);
+        refs.countryInfo.innerHTML = '';
+      }
+      if (countries.length === 1) {
+        renderCountryInfo(countries);
+        refs.countryList.innerHTML = '';
+      }
+    })
+    .catch(error => {
+      onFeachError();
+      refs.countryList.innerHTML = '';
+      refs.countryInfo.innerHTML = '';
+    });
 }
 
 function renderCountryInfo(countries) {
@@ -57,4 +80,8 @@ function renderCountryList(countries) {
     .join('');
 
   return (refs.countryList.innerHTML = markup);
+}
+
+function onFeachError() {
+  Notiflix.Notify.failure('Oops, there is no country with that name');
 }
