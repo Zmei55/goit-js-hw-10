@@ -1,6 +1,4 @@
 import './css/styles.css';
-import countryInfoTpl from './templates/country-info.hbs';
-// import countryListTpl from './templates/country-list.hbs';
 // import Notiflix from 'notiflix';
 
 // const DEBOUNCE_DELAY = 300;
@@ -16,12 +14,21 @@ fetch('https://restcountries.com/v3.1/name/germany?fields=name,capital,populatio
   .then(r => r.json())
   .then(countrys => {
     console.log('countrys', countrys);
-    // countrys.map(c => renderCountryInfo(c));
-    countrys.map(({ languages }) => console.log(languages));
+    countrys.map(c => renderCountryInfo(c));
   })
   .catch(error => console.log(error));
 
-function renderCountryInfo(country) {
-  const markup = countryInfoTpl(country);
-  refs.countryInfo.innerHTML = markup;
+function renderCountryInfo({ name, capital, population, languages, flags }) {
+  const markup = `
+  <div class='card'>
+    <div class='card-header'>
+      <img src='${flags.svg}' alt='${name}' class='card-img' />
+      <h2 class='card-titel'>${name.official}</h2>
+    </div>
+    <p class='card-text'><b>Capital:</b> ${capital}</p>
+    <p class='card-text'><b>Population:</b> ${population}</p>
+    <p class='card-text'><b>Languages:</b> ${Object.values(languages)}</p>
+  </div>`;
+
+  return (refs.countryInfo.innerHTML = markup);
 }
