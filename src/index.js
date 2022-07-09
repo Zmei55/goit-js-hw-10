@@ -67,8 +67,6 @@ function renderCountryInfo(countries) {
 }
 
 function renderCountryList(countries) {
-  console.log('countries', countries);
-
   const markup = countries
     .map(
       ({ name, flags }) =>
