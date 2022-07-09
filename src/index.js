@@ -1,14 +1,12 @@
 import './css/styles.css';
+import getRefs from './js/refs';
+import API from './js/fetch-countries';
 import debounce from 'lodash.debounce';
 import Notiflix from 'notiflix';
 
 const DEBOUNCE_DELAY = 300;
 
-const refs = {
-  countryInfo: document.querySelector('.country-info'),
-  countryList: document.querySelector('.country-list'),
-  inputRef: document.querySelector('#search-box'),
-};
+const refs = getRefs();
 
 refs.inputRef.addEventListener('input', debounce(fetchCountries, DEBOUNCE_DELAY));
 
@@ -17,37 +15,28 @@ function fetchCountries(name) {
 
   const countryToFind = name.target.value.trim();
 
-  fetch(
-    `https://restcountries.com/v3.1/name/${countryToFind}?fields=name,capital,population,languages,flags`
-  )
-    .then(r => {
-      if (!r.ok) {
-        throw Error();
-      }
-
-      return r.json();
-    })
+  API.fetchCountry(countryToFind)
     .then(countries => {
       if (refs.inputRef.value === '') {
-        refs.countryList.innerHTML = '';
-        refs.countryInfo.innerHTML = '';
+        clearCountryList();
+        clearCountryInfo();
       }
       if (countries.length > 10) {
         Notiflix.Notify.success('Too many matches found. Please enter a more specific name.');
       }
       if (countries.length >= 2 && countries.length <= 10) {
         renderCountryList(countries);
-        refs.countryInfo.innerHTML = '';
+        clearCountryInfo();
       }
       if (countries.length === 1) {
         renderCountryInfo(countries);
-        refs.countryList.innerHTML = '';
+        clearCountryList();
       }
     })
     .catch(error => {
       onFeachError();
-      refs.countryList.innerHTML = '';
-      refs.countryInfo.innerHTML = '';
+      clearCountryList();
+      clearCountryInfo();
     });
 }
 
@@ -82,4 +71,12 @@ function renderCountryList(countries) {
 
 function onFeachError() {
   Notiflix.Notify.failure('Oops, there is no country with that name');
+}
+
+function clearCountryList() {
+  refs.countryList.innerHTML = '';
+}
+
+function clearCountryInfo() {
+  refs.countryInfo.innerHTML = '';
 }
