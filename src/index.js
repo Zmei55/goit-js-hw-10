@@ -2,6 +2,9 @@ import './css/styles.css';
 import getRefs from './js/refs';
 import API from './js/fetch-countries';
 import debounce from 'lodash.debounce';
+import { clearCountryInfo, clearCountryList } from './js/clear-countries-html';
+import { renderCountryInfo, renderCountryList } from './js/render-html';
+import { onFeachError } from './js/errors';
 import Notiflix from 'notiflix';
 
 const DEBOUNCE_DELAY = 300;
@@ -23,6 +26,7 @@ function fetchCountries(name) {
       }
       if (countries.length > 10) {
         Notiflix.Notify.success('Too many matches found. Please enter a more specific name.');
+        clearCountryList();
       }
       if (countries.length >= 2 && countries.length <= 10) {
         renderCountryList(countries);
@@ -38,45 +42,4 @@ function fetchCountries(name) {
       clearCountryList();
       clearCountryInfo();
     });
-}
-
-function renderCountryInfo(countries) {
-  const markup = countries.map(
-    ({ name, capital, population, languages, flags }) =>
-      `<div class='card-header'>
-          <img src='${flags.svg}' alt='${name}' class='card-img' />
-          <h2 class='card-titel'>${name.official}</h2>
-        </div>
-        <p class='card-text'><b>Capital:</b> ${capital}</p>
-        <p class='card-text'><b>Population:</b> ${population}</p>
-        <p class='card-text'><b>Languages:</b> ${Object.values(languages)}</p>`
-  );
-
-  return (refs.countryInfo.innerHTML = markup);
-}
-
-function renderCountryList(countries) {
-  const markup = countries
-    .map(
-      ({ name, flags }) =>
-        `<div class='card-header'>
-          <img src='${flags.svg}' alt='${name}' class='card-img' />
-          <h2 class='card-titel'>${name.official}</h2>
-      </div>`
-    )
-    .join('');
-
-  return (refs.countryList.innerHTML = markup);
-}
-
-function onFeachError() {
-  Notiflix.Notify.failure('Oops, there is no country with that name');
-}
-
-function clearCountryList() {
-  refs.countryList.innerHTML = '';
-}
-
-function clearCountryInfo() {
-  refs.countryInfo.innerHTML = '';
 }
