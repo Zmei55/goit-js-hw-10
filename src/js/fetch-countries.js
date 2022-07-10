@@ -13,3 +13,11 @@ function fetchCountry(countryToFind) {
 }
 
 export default { fetchCountry };
+
+// .then(r => {
+//   if (r.ok) {
+//       return r.json();
+//     }
+
+//     throw new Error(r.statusText);
+//   });
